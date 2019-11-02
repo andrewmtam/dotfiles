@@ -1,0 +1,25 @@
+{
+    "tsserver.enable": true,
+    "tsserver.log": "verbose",
+    "tsserver.trace.server": "verbose",
+    "typescript.validate.enable": true,
+    "javascript.validate.enable": false,
+
+    "DISABLED_list.source.files.excludePatterns": ["node_modules/*"],
+    "list.source.grep.command": "ag",
+    "list.normalMappings": {
+        "<C-c>": "do:exit"
+    },
+    "list.insertMappings": {
+        "<C-c>": "do:exit"
+    },
+
+    "diagnostic.checkCurrentLine": false,
+
+    "coc.preferences.formatOnSaveFiletypes": ["javascript", "javascriptreact"],
+
+    "eslint.trace.server": "verbose",
+    "#eslint.autoFixOnSave":true,
+
+    "suggest.timeout": 500
+}
