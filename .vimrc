@@ -1,5 +1,3 @@
-let $FZF_DEFAULT_COMMAND = 'git ls-files'
-
 call plug#begin('~/.vim/plugged')
 
 Plug 'itchyny/lightline.vim'
@@ -181,11 +179,11 @@ set showtabline=0
 
 " https://medium.com/@sidneyliebrand/how-fzf-and-ripgrep-improved-my-workflow-61c7ca212861
 nnoremap <C-p> :GFiles<Cr>
-imap <C-f> <plug>(fzf-complete-path)
-
-
-
+imap <C-f> <plug>(fzf-complete-path-relative)
 nnoremap <C-f> :Rg! 
+
+
+
 
 
 " http://spf13.com/post/perfect-vimrc-vim-config-file
@@ -512,4 +510,3 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " "nnoremap <silent> <C-p>  :<C-u>CocList files<cr>
 
 nnoremap <silent> P :Ag
-
