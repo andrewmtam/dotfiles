@@ -76,7 +76,7 @@ call plug#end()
 
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>).' printing e2e-tests client client-common js', 1,
+  \   'rg --column --line-number --no-heading --color=always --type js --type ts --type cucumber --type sass --type css '.shellescape(<q-args>), 1,
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
@@ -134,9 +134,16 @@ let g:CtrlSpaceSaveWorkspaceOnSwitch = 1
 let g:CtrlSpaceSaveWorkspaceOnExit = 1
 " let g:CtrlSpaceStatuslineFunction = "airline#extensions#ctrlspace#statusline()"
 
+let g:CtrlSpaceLoadLastWorkspaceOnStart = 1
+let g:CtrlSpaceSaveWorkspaceOnSwitch = 1
+let g:CtrlSpaceSaveWorkspaceOnExit = 1
+
 let g:coc_node_path = "/Users/andrewtam/.nvm/versions/node/v10.15.3/bin/node"
 let g:scratch_insert_autohide = 0
 let g:scratch_autohide = 0
+
+let g:workspace_session_directory = $HOME . '/.vim/sessions/'
+let g:workspace_create_new_tabs = 0
 
 """""""""""""""""""
 "
