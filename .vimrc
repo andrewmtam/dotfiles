@@ -74,11 +74,17 @@ call plug#end()
 "  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
 "  \   <bang>0)
 
+"command! -bang -nargs=* Rg
+"  \ call fzf#vim#grep(
+"  \   'rg --column --line-number --no-heading --color=always --type js --type ts --type cucumber --type sass --type css '.shellescape(<q-args>), 1,
+"  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+"  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+"  \   <bang>0)
+
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --type js --type ts --type cucumber --type sass --type css '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   'rg --column --line-number --no-heading --color=always --type js --type ts --type cucumber --type sass --type css --glob=!node_modules/* '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview('up:60%'),
   \   <bang>0)
 
 
@@ -101,6 +107,7 @@ let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit',
+  \ 'ctrl-a': 'select-all',
   \ 'ctrl-y': {lines -> setreg('*', join(lines, "\n"))}}
 
 
@@ -486,7 +493,7 @@ let g:lightline = {
       \ },
       \ }
 
-command! -nargs=+ -complete=custom,s:GrepArgs Ag exe 'CocList --nomral grep '.<q-args>
+command! -nargs=+ -complete=custom,s:GrepArgs Ag exe 'CocList --normal grep '.<q-args>
 
 function! s:GrepArgs(...)
   let list = ['-S', '-smartcase', '-i', '-ignorecase', '-w', '-word',
