@@ -21,12 +21,12 @@ Plug 'airblade/vim-gitgutter'
 "Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " typescript
-Plug 'Quramy/tsuquyomi'
+"Plug 'Quramy/tsuquyomi'
 
 " autocomplete
 "Plug 'Shougo/echodoc.vim'
 "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Tern isn't really working
 "Plug 'carlitux/deoplete-ternjs'
@@ -42,7 +42,6 @@ Plug '~/Developer/vim/path.vim'
 " Replaces ctrlp
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-
 
 "I don't really use tags either
 "Plug 'ludovicchabant/vim-gutentags'
@@ -112,7 +111,6 @@ let g:fzf_action = {
 
 
 
-
 let g:ackprg = 'ag --vimgrep'
 " Write this in your vimrc file
 " let g:ale_lint_on_text_changed = 'never'
@@ -152,6 +150,7 @@ let g:scratch_autohide = 0
 let g:workspace_session_directory = $HOME . '/.vim/sessions/'
 let g:workspace_create_new_tabs = 0
 
+"let g:coc_watch_extensions = 1
 """""""""""""""""""
 "
 " Plugin Alias
@@ -159,7 +158,6 @@ let g:workspace_create_new_tabs = 0
 "
 """""""""""""""""""
 "map \| :TagbarToggle<CR>
-
 
 " `s{char}{char}{label}`
 " Need one more keystroke, but on average, it may be more comfortable.
@@ -171,6 +169,7 @@ nmap f <Plug>(easymotion-overwin-f2)
 "
 "
 """""""""""""""""""
+let mapleader = "'"
 
 " https://stackoverflow.com/questions/2490227/how-does-vims-autoread-work
 au FocusGained,BufEnter * :silent! !
@@ -190,14 +189,11 @@ set nocompatible
 set showtabline=0
 
 
-
 " https://medium.com/@sidneyliebrand/how-fzf-and-ripgrep-improved-my-workflow-61c7ca212861
+" https://github.com/junegunn/fzf.vim/pull/628
 nnoremap <C-p> :GFiles<Cr>
 imap <C-f> <plug>(fzf-complete-path-relative)
-nnoremap <C-f> :Rg! 
-
-
-
+nnoremap <C-f> :Rg!
 
 
 " http://spf13.com/post/perfect-vimrc-vim-config-file
@@ -383,6 +379,11 @@ autocmd FileType netrw setl bufhidden=wipe
 "
 "
 "
+""""""""""""""""""""""""""""
+"""
+""" COC Commands
+"""
+""""""""""""""""""""""""""""
 " if hidden is not set, TextEdit might fail.
 set hidden
 
@@ -418,7 +419,6 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-
 " Use <c-c> for confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
 ""inoremap <expr> <C-c> pumvisible() ? "\<C-y>\<C-c>" : "\<C-c>"
@@ -428,10 +428,10 @@ nmap <silent> [c <Plug>(coc-diagnostic-prev)
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
 
 " Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+nmap <silent> <TAB> <Plug>(coc-definition)
+nmap <silent> <leader>t <Plug>(coc-type-definition)
+nmap <silent> <leader>i <Plug>(coc-implementation)
+nmap <silent> <leader>r <Plug>(coc-references)
 
 " Use K for show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -448,14 +448,11 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>e <Plug>(coc-rename)
 
 " Remap for format selected region
 vmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
-
-" map <C-m> :NERDTreeFind<CR>
-
 
 augroup mygroup
   autocmd!
@@ -480,7 +477,6 @@ command! -nargs=0 Format :call CocAction('format')
 " Use `:Fold` for fold current buffer
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
-
 " Add diagnostic info for https://github.com/itchyny/lightline.vim
 let g:lightline = {
       \ 'colorscheme': 'wombat',
@@ -492,6 +488,12 @@ let g:lightline = {
       \   'cocstatus': 'coc#status'
       \ },
       \ }
+autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+
+" Add (Neo)Vim's native statusline support.
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 command! -nargs=+ -complete=custom,s:GrepArgs Ag exe 'CocList --normal grep '.<q-args>
 
@@ -500,6 +502,7 @@ function! s:GrepArgs(...)
         \ '-e', '-regex', '-u', '-skip-vcs-ignores', '-t', '-extension']
   return join(list, "\n")
 endfunction
+
 
 " Using CocList
 " Show all lists 
@@ -524,3 +527,5 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " "nnoremap <silent> <C-p>  :<C-u>CocList files<cr>
 
 nnoremap <silent> P :Ag
+
+
