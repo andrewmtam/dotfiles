@@ -195,7 +195,8 @@ set showtabline=0
 nnoremap <C-p> :GFiles<Cr>
 " Allow inserting relative paths
 function! s:generate_relative(path)
-  let target = getcwd() . '/' . (join(a:path))
+  " Modify to only return the root
+  let target = fnamemodify(getcwd() . '/' . (join(a:path)), ':r')
   let base = expand('%:p:h')
 
   let prefix = ""
