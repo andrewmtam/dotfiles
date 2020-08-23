@@ -15,6 +15,7 @@ Plug 'moll/vim-node'
 " Git integration
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-rhubarb'
 
 " File navigation
 " Plug 'scrooloose/nerdtree'
@@ -192,7 +193,26 @@ set showtabline=0
 " https://medium.com/@sidneyliebrand/how-fzf-and-ripgrep-improved-my-workflow-61c7ca212861
 " https://github.com/junegunn/fzf.vim/pull/628
 nnoremap <C-p> :GFiles<Cr>
-imap <C-f> <plug>(fzf-complete-path-relative)
+" Allow inserting relative paths
+function! s:generate_relative(path)
+  let target = getcwd() . '/' . (join(a:path))
+  let base = expand('%:p:h')
+
+  let prefix = ""
+  while stridx(target, base) != 0
+    let base = substitute(system('dirname ' . base), '\n\+$', '', '')
+    let prefix = '../' . prefix
+  endwhile
+
+  if prefix == ''
+    let prefix = './'
+  endif
+
+  return prefix . substitute(target, base . '/', '', '')
+endfunction
+
+imap <expr> <C-f> fzf#vim#complete(fzf#wrap({
+  \ 'reducer': function('<sid>generate_relative')}))
 nnoremap <C-f> :Rg!
 
 
