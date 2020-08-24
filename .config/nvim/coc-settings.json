@@ -16,10 +16,13 @@
 
     "diagnostic.checkCurrentLine": false,
 
-    "coc.preferences.formatOnSaveFiletypes": ["javascript", "javascriptreact"],
+    "coc.preferences.formatOnSaveFiletypes": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+    "coc.preferences.rootPatterns": ["package.json", ".eslintrc.js", "tsconfig.json"],
 
     "eslint.trace.server": "verbose",
     "#eslint.autoFixOnSave":true,
 
-    "suggest.timeout": 500
+    "suggest.timeout": 500,
+    "java.errors.incompleteClasspath.severity": "ignore"
+
 }

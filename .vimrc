@@ -2,6 +2,9 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'itchyny/lightline.vim'
 
+" Markdown server
+Plug 'shime/vim-livedown'
+
 " color
 Plug 'morhetz/gruvbox'
 
@@ -43,6 +46,7 @@ Plug '~/Developer/vim/path.vim'
 " Replaces ctrlp
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+
 
 "I don't really use tags either
 "Plug 'ludovicchabant/vim-gutentags'
@@ -112,6 +116,7 @@ let g:fzf_action = {
 
 
 
+
 let g:ackprg = 'ag --vimgrep'
 " Write this in your vimrc file
 " let g:ale_lint_on_text_changed = 'never'
@@ -151,7 +156,6 @@ let g:scratch_autohide = 0
 let g:workspace_session_directory = $HOME . '/.vim/sessions/'
 let g:workspace_create_new_tabs = 0
 
-"let g:coc_watch_extensions = 1
 """""""""""""""""""
 "
 " Plugin Alias
@@ -159,6 +163,7 @@ let g:workspace_create_new_tabs = 0
 "
 """""""""""""""""""
 "map \| :TagbarToggle<CR>
+
 
 " `s{char}{char}{label}`
 " Need one more keystroke, but on average, it may be more comfortable.
@@ -190,6 +195,7 @@ set nocompatible
 set showtabline=0
 
 
+
 " https://medium.com/@sidneyliebrand/how-fzf-and-ripgrep-improved-my-workflow-61c7ca212861
 " https://github.com/junegunn/fzf.vim/pull/628
 nnoremap <C-p> :GFiles<Cr>
@@ -215,6 +221,11 @@ endfunction
 imap <expr> <C-f> fzf#vim#complete(fzf#wrap({
   \ 'reducer': function('<sid>generate_relative')}))
 nnoremap <C-f> :Rg!
+imap <C-f> <plug>(fzf-complete-path-relative)
+nnoremap <C-f> :Rg! 
+
+
+
 
 
 " http://spf13.com/post/perfect-vimrc-vim-config-file
@@ -408,6 +419,11 @@ autocmd FileType netrw setl bufhidden=wipe
 " if hidden is not set, TextEdit might fail.
 set hidden
 
+"let g:coc_watch_extensions = 1
+" https://github.com/neoclide/coc.nvim/wiki/Using-workspaceFolders
+let g:WorkspaceFolders = ['/Users/andrewtam/Developer/mark43/mark43/client', '/Users/andrewtam/Developer/mark43/mark43/client-common']
+set sessionoptions+=globals
+
 " Better display for messages
 set cmdheight=2
 
@@ -439,6 +455,7 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
 
 " Use <c-c> for confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
@@ -498,6 +515,7 @@ command! -nargs=0 Format :call CocAction('format')
 " Use `:Fold` for fold current buffer
 command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
+
 " Add diagnostic info for https://github.com/itchyny/lightline.vim
 let g:lightline = {
       \ 'colorscheme': 'wombat',
@@ -509,12 +527,6 @@ let g:lightline = {
       \   'cocstatus': 'coc#status'
       \ },
       \ }
-autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
-
-" Add (Neo)Vim's native statusline support.
-" NOTE: Please see `:h coc-status` for integrations with external plugins that
-" provide custom statusline: lightline.vim, vim-airline.
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 command! -nargs=+ -complete=custom,s:GrepArgs Ag exe 'CocList --normal grep '.<q-args>
 
@@ -523,7 +535,6 @@ function! s:GrepArgs(...)
         \ '-e', '-regex', '-u', '-skip-vcs-ignores', '-t', '-extension']
   return join(list, "\n")
 endfunction
-
 
 " Using CocList
 " Show all lists 
@@ -547,6 +558,5 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " Ctrl P Eqiuovalent
 " "nnoremap <silent> <C-p>  :<C-u>CocList files<cr>
 
-nnoremap <silent> P :Ag
-
-
+command! JSONParse %!node -r fs -e 'console.log(JSON.parse(fs.readFileSync("/dev/stdin", "utf-8")));'
+command! JSONStringify %!node -r fs -e 'console.log(JSON.stringify(JSON.parse(fs.readFileSync("/dev/stdin", "utf-8")), null, 4));'
