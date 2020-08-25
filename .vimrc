@@ -215,14 +215,13 @@ function! s:generate_relative(path)
     let prefix = './'
   endif
 
-  return prefix . substitute(target, base . '/', '', '')
+  return "'" . prefix . substitute(target, base . '/', '', '') . "';"
 endfunction
 
-imap <expr> <C-f> fzf#vim#complete(fzf#wrap({
+imap <expr> <C-p> fzf#vim#complete(fzf#wrap({
+  \ 'source': 'git ls-files',
   \ 'reducer': function('<sid>generate_relative')}))
 nnoremap <C-f> :Rg!
-imap <C-f> <plug>(fzf-complete-path-relative)
-nnoremap <C-f> :Rg! 
 
 
 
@@ -505,7 +504,7 @@ vmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>a  <Plug>(coc-codeaction-selected)
 
 " Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
+" nmap <leader>ac  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)
 
