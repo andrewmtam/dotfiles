@@ -21,7 +21,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-rhubarb'
 
 " File navigation
-" Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree'
 "Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " typescript
@@ -60,37 +60,32 @@ Plug 'junegunn/fzf.vim'
 " Show vim tabs
 " Plug 'vim-airline/vim-airline'
 
-
 " Workspaces - controlled bufferes per tab!
 Plug 'vim-ctrlspace/vim-ctrlspace'
-
-" Plug 'mtth/scratch.vim'
 
 call plug#end()
 
 
 " Override Rg to support directory
 " Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
-"command! -bang -nargs=* Rg
-"  \ call fzf#vim#grep(
-"  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-"  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-"  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-"  \   <bang>0)
 
-"command! -bang -nargs=* Rg
-"  \ call fzf#vim#grep(
-"  \   'rg --column --line-number --no-heading --color=always --type js --type ts --type cucumber --type sass --type css '.shellescape(<q-args>), 1,
-"  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-"  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-"  \   <bang>0)
+"function! Rg(query, ...)
+"    let command_fmt = 'rg --column --line-number --no-heading --color=always %s || true'
+"    let initial_command = printf(command_fmt, shellescape(a:query))
+"    let spec = {'options': ['--phony', '--query', a:query, '--bind', 'ctrl-s:deselect-all,ctrl-a:select-all,ctrl-d:page-down,ctrl-u:page-up', '--preview-window', 'up:60%']}
+"    call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), 1)
+"endfunction
+"command! -bang -nargs=+ Rg call Rg(<f-args>)
 
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --type js --type ts --type cucumber --type sass --type css --glob=!node_modules/* '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview('up:60%'),
-  \   <bang>0)
+function! RipgrepFzf(query, ...)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s ' . join(a:000)
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'ctrl-s:deselect-all,ctrl-a:select-all,ctrl-d:page-down,ctrl-u:page-up', '--bind', 'change:reload:'.reload_command , '--preview-window', 'up:60%']}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), 1)
+endfunction
 
+command! -nargs=* -bang Rg call RipgrepFzf(<f-args>)
 
 
 """""""""""""""""""
@@ -111,11 +106,10 @@ let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit',
-  \ 'ctrl-a': 'select-all',
   \ 'ctrl-y': {lines -> setreg('*', join(lines, "\n"))}}
 
 
-
+map <C-n> :NERDTreeFind<CR>
 
 let g:ackprg = 'ag --vimgrep'
 " Write this in your vimrc file
@@ -139,7 +133,8 @@ let g:EasyMotion_smartcase = 1
 
 let g:gutentags_ctags_exclude = ['node_modules']
 
-let g:CtrlSpaceDefaultMappingKey = "<C-space> "
+" Only needed for neo vim
+" let g:CtrlSpaceDefaultMappingKey = "<C-space> "
 " let g:CtrlSpaceLoadLastWorkspaceOnStart = 1
 let g:CtrlSpaceSaveWorkspaceOnSwitch = 1
 let g:CtrlSpaceSaveWorkspaceOnExit = 1
@@ -149,12 +144,13 @@ let g:CtrlSpaceLoadLastWorkspaceOnStart = 1
 let g:CtrlSpaceSaveWorkspaceOnSwitch = 1
 let g:CtrlSpaceSaveWorkspaceOnExit = 1
 
-let g:coc_node_path = "/Users/andrewtam/.nvm/versions/node/v10.15.3/bin/node"
-let g:scratch_insert_autohide = 0
-let g:scratch_autohide = 0
+"let g:coc_node_path = "/Users/andrewtam/.nvm/versions/node/v10.15.3/bin/node"
 
 let g:workspace_session_directory = $HOME . '/.vim/sessions/'
 let g:workspace_create_new_tabs = 0
+
+set directory=$HOME/.vim/swapfiles/
+
 
 """""""""""""""""""
 "
@@ -221,10 +217,10 @@ endfunction
 imap <expr> <C-p> fzf#vim#complete(fzf#wrap({
   \ 'source': 'git ls-files',
   \ 'reducer': function('<sid>generate_relative')}))
-nnoremap <C-f> :Rg!
+nnoremap <C-f> :Rg! 
 
-
-
+" Automatically source vimrc on save.
+" autocmd! bufwritepost $MYVIMRC source $MYVIMRC
 
 
 " http://spf13.com/post/perfect-vimrc-vim-config-file
@@ -243,6 +239,9 @@ set timeoutlen=100     " timeout after 100 msec
 " Search case-sensitive if search has caps in it
 set ignorecase
 set smartcase
+
+" https://vi.stackexchange.com/questions/22063/enable-incremental-search-and-highlight-while-typing-a-search-term
+set is hls
 
 " allow to access one character past last one
 set virtualedit=onemore
@@ -420,7 +419,8 @@ set hidden
 
 "let g:coc_watch_extensions = 1
 " https://github.com/neoclide/coc.nvim/wiki/Using-workspaceFolders
-let g:WorkspaceFolders = ['/Users/andrewtam/Developer/mark43/mark43/client', '/Users/andrewtam/Developer/mark43/mark43/client-common']
+"let g:WorkspaceFolders = ['/Users/andrewtam/Developer/mark43/mark43/client', '/Users/andrewtam/Developer/mark43/mark43/client-common', '/Users/andrewtam/Developer/mark43/mark43/arc']
+let g:WorkspaceFolders = ['/Users/andrewtam/Developer/mark43/mark43/arc']
 set sessionoptions+=globals
 
 " Better display for messages
@@ -449,7 +449,7 @@ function! s:check_back_space() abort
 endfunction
 
 " Use <c-space> for trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
+inoremap <silent><expr> <C-k> coc#refresh()
 
 " Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
@@ -482,7 +482,7 @@ function! s:show_documentation()
 endfunction
 
 " Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
+" autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for rename current word
 nmap <leader>e <Plug>(coc-rename)
