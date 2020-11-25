@@ -19,13 +19,13 @@ Plug 'moll/vim-node'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-rhubarb'
-
+ 
 " File navigation
 Plug 'scrooloose/nerdtree'
-"Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " typescript
-"Plug 'Quramy/tsuquyomi'
+" Plug 'Quramy/tsuquyomi'
 
 " autocomplete
 "Plug 'Shougo/echodoc.vim'
@@ -127,9 +127,9 @@ let g:ackprg = 'ag --vimgrep'
 "\}
 "let g:ale_fix_on_save = 1
 
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
 " Turn on case insensitive feature
 let g:EasyMotion_smartcase = 1
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
 let g:gutentags_ctags_exclude = ['node_modules']
 
@@ -182,6 +182,9 @@ filetype plugin on
 
 " Copy vim clipboard to system clipboard
 set clipboard=unnamedplus
+
+" This is needed for some reason also
+set clipboard=unnamed
 
 " https://superuser.com/questions/163589/switch-buffers-in-vim-without-saving-to-a-currently-modified-file
 set hidden
